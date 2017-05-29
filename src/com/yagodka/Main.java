@@ -21,31 +21,31 @@ public class Main {
         System.out.println("Time: " + seconds + " s. Number of treads: " + threads);
 
         // For big matrices with random data
-        timedTest(1, 1000);
-        timedTest(2, 1000);
-        timedTest(4, 1000);
-        timedTest(8, 1000);
+        timedTest(1000, 1);
+        timedTest(1000, 2);
+        timedTest(1000, 4);
+        timedTest(1000, 8);
 
-        timedTest(1, 2000);
-        timedTest(2, 2000);
-        timedTest(4, 2000);
-        timedTest(8, 2000);
+        timedTest(2000, 1);
+        timedTest(2000, 2);
+        timedTest(2000, 4);
+        timedTest(2000, 8);
 
-        timedTest(1, 4000);
-        timedTest(2, 4000);
-        timedTest(4, 4000);
-        timedTest(8, 4000);
+        timedTest(4000, 1);
+        timedTest(4000, 2);
+        timedTest(4000, 4);
+        timedTest(4000, 8);
     }
 
-    private static void timedTest(int threads, int dimension) {
+    private static void timedTest(int dimension, int parallelism) {
 
         Matrix mr1 = new Matrix(dimension, dimension);
         Matrix mr2 = new Matrix(dimension, dimension);
 
         long start = System.nanoTime();
-        int dim = mr1.multiply(mr2, threads).getValue().length;
+        int dim = mr1.multiply(mr2, parallelism).getValue().length;
         long end = System.nanoTime();
         double seconds = (double)(end - start) / 1000000000.0;
-        System.out.println("Dim: " + dim + ", time: " + seconds + " s. Treads: " + threads);
+        System.out.println("Dim: " + dim + ", time: " + seconds + " s. Parallelism: " + parallelism);
     }
 }

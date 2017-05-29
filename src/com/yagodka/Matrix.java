@@ -68,22 +68,22 @@ public class Matrix {
         return value[0].length;
     }
 
-    Matrix multiply(Matrix other, int threadNumber) {
+    Matrix multiply(Matrix other, int parallelism) {
 
-        int[][] result = new int[rows()][other.cols()];
-        ExecutorService executor = Executors.newFixedThreadPool(threadNumber);
-        List<Future<int[][]>> list = new ArrayList<>();
+        int[][] result = new int[rows()][cols()];
+        ExecutorService executor = Executors.newFixedThreadPool(parallelism);
+        List<Future<int[][]>> callables = new ArrayList<>();
 
-        int parts = Math.max(rows() / threadNumber, 1);
+        int parts = Math.max(rows() / parallelism, 1);
 
         for (int i = 0; i < rows(); i += parts) {
             Callable<int[][]> worker = new PartMultiplier(value, other.getValue(), i, i + parts);
-            list.add(executor.submit(worker));
+            callables.add(executor.submit(worker));
         }
 
         // retrieve the result from parts
         int start = 0;
-        for (Future<int[][]> future : list) {
+        for (Future<int[][]> future : callables) {
             try {
                 System.arraycopy(future.get(), start, result, start, parts);
             } catch (InterruptedException | ExecutionException e) {
